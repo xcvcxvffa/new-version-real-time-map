@@ -11,20 +11,23 @@ const io = socketio(server);
 app.set("view engine", "ejs");
 app.use(express.static(path.join(__dirname, "public")));
 
-io.on("connection", function (socket) {
-  console.log("connected");
-  socket.on("send-location", function (data) {
+io.on("connection", (socket) => {
+  console.log("A user connected:", socket.id);
+
+  socket.on("send-location", (data) => {
     io.emit("receive-location", { id: socket.id, ...data });
   });
-  socket.on("disconnection", function () {
-    io.emit("user-disconnection", socket.id);
+
+  socket.on("disconnect", () => {
+    console.log("A user disconnected:", socket.id);
+    io.emit("user-disconnected", { id: socket.id });
   });
 });
 
-app.get("/", function (req, res) {
+app.get("/", (req, res) => {
   res.render("index");
 });
 
 server.listen(1011, () => {
-  console.log("server is running...");
+  console.log("Server is running on port 1011...");
 });

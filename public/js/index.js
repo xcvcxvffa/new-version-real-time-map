@@ -40,10 +40,10 @@ socket.on("receive-location", (data) => {
 });
 
 socket.on("user-disconnected", (data) => {
-  const { id } = data; // Extract the id from data
+  const { id } = data;
   if (markers[id]) {
     map.removeLayer(markers[id]);
     delete markers[id];
-    console.log("data delete", markers[id]);
+    console.log("Marker deleted:", id);
   }
 });
