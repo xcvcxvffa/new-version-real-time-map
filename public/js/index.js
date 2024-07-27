@@ -5,6 +5,11 @@ if (navigator.geolocation) {
     (position) => {
       const { latitude, longitude } = position.coords;
       socket.emit("send-location", { latitude, longitude });
+
+      // Set the initial map view to the user's location
+      if (!map.hasLayer(markers[socket.id])) {
+        map.setView([latitude, longitude]);
+      }
     },
     (error) => {
       console.error(error);
@@ -30,8 +35,11 @@ const markers = {};
 socket.on("receive-location", (data) => {
   const { id, latitude, longitude } = data;
   console.log(data);
+
+  // Update the map view to the latest location
   map.setView([latitude, longitude]);
 
+  // Update or add marker
   if (markers[id]) {
     markers[id].setLatLng([latitude, longitude]);
   } else {
